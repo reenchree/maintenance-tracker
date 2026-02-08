@@ -18,14 +18,14 @@ class VinDecodeTest < ApplicationSystemTestCase
     fill_in "VIN", with: vin
     click_button "Decode VIN"
 
-    assert_field "Make", with: "Honda"
-    assert_field "Model", with: "Accord"
+    assert_select "Make", selected: "Honda"
+    assert_select "Model", selected: "Accord"
     assert_select "Year", selected: "2020"
     assert_field "Trim", with: "Sport"
     assert_select "Vehicle type", selected: "Car"
   end
 
-  test "selecting vehicle type populates make suggestions" do
+  test "selecting vehicle type populates make dropdown" do
     makes_body = { "Results" => [
       { "MakeName" => "HONDA" },
       { "MakeName" => "TOYOTA" },
@@ -38,11 +38,10 @@ class VinDecodeTest < ApplicationSystemTestCase
 
     select "Car", from: "Vehicle type"
 
-    # Wait for async fetch and verify datalist has options
-    assert_datalist_options("make-options", %w[BMW Honda Toyota])
+    assert_select_options("Make", %w[BMW Honda Toyota])
   end
 
-  test "selecting make and year populates model suggestions" do
+  test "selecting make and year populates model dropdown" do
     stub_request(:get, %r{vpic\.nhtsa\.dot\.gov/api/vehicles/GetMakesForVehicleType/car})
       .to_return(status: 200, body: { "Results" => [ { "MakeName" => "HONDA" } ] }.to_json, headers: { "Content-Type" => "application/json" })
 
@@ -57,25 +56,26 @@ class VinDecodeTest < ApplicationSystemTestCase
     visit new_vehicle_url
 
     select "Car", from: "Vehicle type"
-    select "2022", from: "Year"
-    fill_in "Make", with: "Honda"
-    # Trigger change event since fill_in doesn't fire it for datalist refresh
-    find_field("Make").native.send_keys(:tab)
+    assert_select_options("Make", %w[Honda])
 
-    assert_datalist_options("model-options", %w[Accord CR-V Civic])
+    select "Honda", from: "Make"
+    select "2022", from: "Year"
+
+    assert_select_options("Model", %w[Accord CR-V Civic])
   end
 
   private
 
-  def assert_datalist_options(datalist_id, expected_values)
+  def assert_select_options(label, expected_values)
+    field = find_field(label)
     values = []
     # Retry to allow async fetch to complete
     10.times do
-      values = evaluate_script("Array.from(document.getElementById('#{datalist_id}').options).map(o => o.value)")
+      values = field.all("option").map(&:value).reject(&:empty?)
       break if values.sort == expected_values.sort
       sleep 0.2
     end
     assert_equal expected_values.sort, values.sort,
-      "Expected datalist ##{datalist_id} to contain #{expected_values.inspect} but got #{values.inspect}"
+      "Expected #{label} select to contain #{expected_values.inspect} but got #{values.inspect}"
   end
 end

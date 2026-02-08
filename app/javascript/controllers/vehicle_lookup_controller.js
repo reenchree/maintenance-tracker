@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["vehicleType", "year", "make", "model", "makeList", "modelList"]
+  static targets = ["vehicleType", "year", "make", "model"]
   static values = { makesUrl: String, modelsUrl: String }
 
   connect() {
@@ -15,8 +15,8 @@ export default class extends Controller {
 
   async fetchMakes() {
     const vehicleType = this.vehicleTypeTarget.value
-    this.clearDatalist(this.makeListTarget)
-    this.clearDatalist(this.modelListTarget)
+    this.populateSelect(this.makeTarget, [])
+    this.populateSelect(this.modelTarget, [])
 
     if (!vehicleType) return
 
@@ -24,16 +24,16 @@ export default class extends Controller {
       const url = `${this.makesUrlValue}?vehicle_type=${encodeURIComponent(vehicleType)}`
       const response = await fetch(url)
       const makes = await response.json()
-      this.populateDatalist(this.makeListTarget, makes)
+      this.populateSelect(this.makeTarget, makes)
     } catch {
-      // Silent degradation — input still works as free-text
+      // Silent degradation — select keeps current value if any
     }
   }
 
   async fetchModels() {
-    const make = this.makeTarget.value.trim()
+    const make = this.makeTarget.value
     const year = this.yearTarget.value
-    this.clearDatalist(this.modelListTarget)
+    this.populateSelect(this.modelTarget, [])
 
     if (!make || !year) return
 
@@ -41,21 +41,31 @@ export default class extends Controller {
       const url = `${this.modelsUrlValue}?make=${encodeURIComponent(make)}&year=${encodeURIComponent(year)}`
       const response = await fetch(url)
       const models = await response.json()
-      this.populateDatalist(this.modelListTarget, models)
+      this.populateSelect(this.modelTarget, models)
     } catch {
-      // Silent degradation — input still works as free-text
+      // Silent degradation — select keeps current value if any
     }
   }
 
-  populateDatalist(datalist, items) {
+  populateSelect(select, items) {
+    const currentValue = select.value
+    const promptOption = select.querySelector('option[value=""]')
+    select.innerHTML = ""
+
+    if (promptOption) select.appendChild(promptOption)
+
+    // Preserve current value even if not in fetched items
+    if (currentValue && !items.includes(currentValue)) {
+      items = [currentValue, ...items]
+    }
+
     for (const item of items) {
       const option = document.createElement("option")
       option.value = item
-      datalist.appendChild(option)
+      option.textContent = item
+      select.appendChild(option)
     }
-  }
 
-  clearDatalist(datalist) {
-    datalist.innerHTML = ""
+    if (currentValue) select.value = currentValue
   }
 }

@@ -44,6 +44,7 @@ export default class extends Controller {
     ]
     for (const [value, target] of fields) {
       if (value != null) {
+        this.ensureOption(target, value)
         target.value = value
         target.dispatchEvent(new Event("change", { bubbles: true }))
       }
@@ -58,6 +59,18 @@ export default class extends Controller {
   clearError() {
     this.errorTarget.textContent = ""
     this.errorTarget.hidden = true
+  }
+
+  ensureOption(target, value) {
+    if (target.tagName !== "SELECT") return
+    const str = String(value)
+    const exists = Array.from(target.options).some(o => o.value === str)
+    if (!exists) {
+      const option = document.createElement("option")
+      option.value = str
+      option.textContent = str
+      target.appendChild(option)
+    }
   }
 
   setLoading(loading) {
