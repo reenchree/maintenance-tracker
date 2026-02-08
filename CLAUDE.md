@@ -68,6 +68,14 @@ This project follows Rails conventions rigorously. When contributing, adhere to 
 - **Minitest for testing.** Write model tests, controller tests, integration tests, and system tests using Rails' built-in Minitest framework. No RSpec.
 - **Consult the Rails guides.** When unsure how to do something, check the official Rails guides (https://guides.rubyonrails.org/) before inventing a pattern.
 
+## Commit and Push Discipline
+
+Commit and push after each logical unit of work — don't let changes pile up across an entire session. A logical unit is typically one feature, one scaffold, one infrastructure change, etc. When implementing a multi-step plan, commit after each step that leaves the app in a working state (tests pass, rubocop clean).
+
+- Run `bin/rails test`, `bin/rails test:system`, and `bundle exec rubocop` before committing.
+- Push to `origin` immediately after each commit unless working on a branch that isn't ready.
+- Use concise commit messages that explain the "what" and "why." Don't list every file.
+
 ## Working Style
 
 The developer is a senior SWE who is also the product owner and sole customer of this app. They care about software design — clean architecture, thoughtful abstractions, and well-reasoned trade-offs. Don't over-explain basics. Focus on the "why" behind decisions, not just the "how." When proposing changes, consider maintainability, clarity, and how the design will evolve. Product decisions can be made directly without external stakeholder approval.
