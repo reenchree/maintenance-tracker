@@ -1,0 +1,25 @@
+oil_change:
+  vehicle: civic
+  service_type: 0
+  description: Synthetic oil change with filter
+  performed_on: 2025-11-15
+  mileage_at_service: 42000
+  cost_cents: 7500
+  shop_or_mechanic: Quick Lube
+
+tire_rotation:
+  vehicle: civic
+  service_type: 1
+  description: Rotate and balance all four tires
+  performed_on: 2025-12-01
+  mileage_at_service: 43500
+  cost_cents: 4000
+
+inspection:
+  vehicle: sportster
+  service_type: 7
+  description: Annual safety inspection
+  performed_on: 2026-01-10
+  mileage_at_service: 3100
+  cost_cents: 5000
+  shop_or_mechanic: Harley Dealer

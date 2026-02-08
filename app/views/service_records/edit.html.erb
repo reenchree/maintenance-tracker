@@ -1,0 +1,12 @@
+<% content_for :title, "Edit service record" %>
+
+<div class="mb-6">
+  <%= link_to "\u2190 Back to #{@vehicle.name}", @vehicle,
+      class: "text-sm text-muted hover:text-primary transition-colors" %>
+</div>
+
+<h1 class="text-2xl font-bold text-primary mb-6">Edit service record</h1>
+
+<div class="bg-white rounded-lg border border-border shadow-sm p-6">
+  <%= render "form", vehicle: @vehicle, service_record: @service_record %>
+</div>

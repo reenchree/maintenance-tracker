@@ -1,0 +1,12 @@
+<% content_for :title, "New vehicle" %>
+
+<div class="mb-6">
+  <%= link_to "&larr; Back to vehicles".html_safe, vehicles_path,
+      class: "text-sm text-muted hover:text-primary transition-colors" %>
+</div>
+
+<h1 class="text-2xl font-bold text-primary mb-6">New vehicle</h1>
+
+<div class="bg-white rounded-lg border border-border shadow-sm p-6">
+  <%= render "form", vehicle: @vehicle %>
+</div>

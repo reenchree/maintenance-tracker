@@ -1,0 +1,20 @@
+civic:
+  name: Daily Driver
+  vehicle_type: 0
+  make: Honda
+  model: Civic
+  year: 2022
+  trim: EX-L
+  color: Blue
+  vin: 1HGBH41JXMN109186
+  license_plate: ABC-1234
+  current_mileage: 45000
+
+sportster:
+  name: Weekend Ride
+  vehicle_type: 1
+  make: Harley-Davidson
+  model: Sportster S
+  year: 2024
+  color: Black
+  current_mileage: 3200

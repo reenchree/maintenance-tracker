@@ -63,4 +63,8 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+  # Stub external HTTP requests in tests [https://github.com/bblimke/webmock]
+  gem "webmock"
 end
+
+gem "tailwindcss-rails", "~> 4.4"

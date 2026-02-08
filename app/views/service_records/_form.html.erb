@@ -1,0 +1,73 @@
+<%= form_with(model: [ vehicle, service_record ], class: "space-y-6") do |form| %>
+  <% if service_record.errors.any? %>
+    <div class="px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-sm">
+      <h2 class="font-medium text-danger mb-2">
+        <%= pluralize(service_record.errors.count, "error") %> prohibited this service record from being saved:
+      </h2>
+      <ul class="list-disc list-inside text-danger space-y-1">
+        <% service_record.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <fieldset class="space-y-4">
+    <legend class="text-lg font-semibold text-gray-900">Service info</legend>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <%= form.label :service_type, class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= form.select :service_type, ServiceRecord.service_types.keys.map { |t| [t.humanize, t] }, { prompt: "Select type" },
+            class: "w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" %>
+      </div>
+
+      <div>
+        <%= form.label :performed_on, "Date performed", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= form.date_field :performed_on, class: "w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" %>
+      </div>
+    </div>
+
+    <div>
+      <%= form.label :description, class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= form.text_field :description, class: "w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" %>
+    </div>
+  </fieldset>
+
+  <fieldset class="space-y-4">
+    <legend class="text-lg font-semibold text-gray-900">Details</legend>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <%= form.label :mileage_at_service, "Mileage", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= form.number_field :mileage_at_service, min: 0, class: "w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" %>
+      </div>
+
+      <div>
+        <%= form.label :cost_dollars_input, "Cost", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted">$</span>
+          <%= form.number_field :cost_dollars_input, value: service_record.cost_dollars, min: 0, step: 0.01,
+              class: "w-full rounded-lg border border-border pl-7 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" %>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <%= form.label :shop_or_mechanic, class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= form.text_field :shop_or_mechanic, class: "w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" %>
+    </div>
+  </fieldset>
+
+  <fieldset class="space-y-4">
+    <legend class="text-lg font-semibold text-gray-900">Notes</legend>
+
+    <div>
+      <%= form.textarea :notes, rows: 4, class: "w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" %>
+    </div>
+  </fieldset>
+
+  <div>
+    <%= form.submit class: "bg-primary text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-primary-light transition-colors cursor-pointer" %>
+  </div>
+<% end %>

@@ -1,0 +1,38 @@
+<% content_for :title, @vehicle.name %>
+
+<div class="mb-6">
+  <%= link_to "&larr; Back to vehicles".html_safe, vehicles_path,
+      class: "text-sm text-muted hover:text-primary transition-colors" %>
+</div>
+
+<div class="bg-white rounded-lg border border-border shadow-sm p-6">
+  <%= render @vehicle %>
+</div>
+
+<div class="mt-6 flex items-center gap-4">
+  <%= link_to "Edit", edit_vehicle_path(@vehicle),
+      class: "bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-light transition-colors" %>
+  <%= button_to "Delete", @vehicle, method: :delete,
+      class: "bg-danger text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors cursor-pointer",
+      data: { turbo_confirm: "Are you sure you want to delete this vehicle?" } %>
+</div>
+
+<div class="mt-10">
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-xl font-bold text-gray-900">Service history</h2>
+    <%= link_to "Add service record", new_vehicle_service_record_path(@vehicle),
+        class: "bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-light transition-colors" %>
+  </div>
+
+  <div class="bg-white rounded-lg border border-border shadow-sm">
+    <% if @vehicle.service_records.any? %>
+      <div class="divide-y divide-border px-6">
+        <%= render @vehicle.service_records.recent %>
+      </div>
+    <% else %>
+      <div class="px-6 py-8 text-center text-sm text-muted">
+        No service records yet. Add one to start tracking maintenance.
+      </div>
+    <% end %>
+  </div>
+</div>
