@@ -1,0 +1,68 @@
+# Maintenance Tracker
+
+Vehicle maintenance tracking web app. Tracks maintenance intervals, service history, and upcoming service needs. Deployed on a home Kubernetes cluster.
+
+## Tech Stack
+
+- Ruby 4.0.1 (managed via mise)
+- Rails 8.1.2
+- PostgreSQL (all environments)
+- Hotwire (Turbo + Stimulus) for front-end interactivity
+- Kamal for deployment
+- Solid Cache, Solid Queue, Solid Cable for cache/jobs/WebSockets
+
+## Dev Setup
+
+```sh
+# Install mise (Ruby version manager)
+brew install mise
+eval "$(mise activate zsh)"
+
+# Install Ruby
+mise use --global ruby@4.0.1
+
+# Install dependencies
+bundle install
+
+# Start PostgreSQL via Docker Compose
+docker compose up -d
+
+# Set up database
+bin/rails db:setup
+
+# Start dev server
+bin/dev
+```
+
+## Common Commands
+
+```sh
+bin/rails server        # Start the dev server
+bin/rails console       # Rails console
+bin/rails test          # Run tests (excluding system tests)
+bin/rails test:system   # Run system tests
+bin/rails generate ...  # Run a generator
+bin/rails db:migrate    # Run pending migrations
+bin/rails db:seed       # Seed the database
+bin/rails routes        # List all routes
+bundle exec rubocop     # Lint
+```
+
+## The Rails Way
+
+This project follows Rails conventions rigorously. When contributing, adhere to these principles:
+
+- **Convention over configuration.** Follow Rails defaults. Don't invent custom organizational schemes or override framework conventions.
+- **Use generators.** Scaffold models, controllers, and migrations with `rails g model`, `rails g scaffold`, `rails g migration`, etc. Don't hand-write boilerplate.
+- **RESTful routes and resourceful controllers.** Define resources in `config/routes.rb`. Controllers should map to standard CRUD actions (`index`, `show`, `new`, `create`, `edit`, `update`, `destroy`).
+- **ActiveRecord conventions.** Follow naming conventions (singular model, plural table). Use associations, validations, callbacks, and scopes as intended.
+- **Built-in Rails tools first.** Use Action Text, Active Storage, Action Mailer, Active Job, etc. before reaching for third-party gems. Only add gems when Rails doesn't provide a solution.
+- **Standard directory structure.** Put code where Rails expects it. Models in `app/models/`, controllers in `app/controllers/`, views in `app/views/`, etc.
+- **Concerns, helpers, and partials.** Use these Rails abstractions for shared behavior and view logic. Extract concerns for cross-cutting model/controller logic.
+- **Migration DSL over raw SQL.** Write migrations using the Rails DSL. Use `bin/rails db:migrate` to apply them.
+- **Minitest for testing.** Write model tests, controller tests, integration tests, and system tests using Rails' built-in Minitest framework. No RSpec.
+- **Consult the Rails guides.** When unsure how to do something, check the official Rails guides (https://guides.rubyonrails.org/) before inventing a pattern.
+
+## Working Style
+
+The developer is a senior SWE who is also the product owner and sole customer of this app. They care about software design — clean architecture, thoughtful abstractions, and well-reasoned trade-offs. Don't over-explain basics. Focus on the "why" behind decisions, not just the "how." When proposing changes, consider maintainability, clarity, and how the design will evolve. Product decisions can be made directly without external stakeholder approval.
