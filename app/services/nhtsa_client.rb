@@ -53,7 +53,9 @@ class NhtsaClient
     upcased = name.strip.upcase
     return upcased if UPPERCASE_MAKES.include?(upcased)
 
-    name.strip.titleize
+    # Titleize each hyphen-separated part independently to preserve hyphens
+    # e.g. "HARLEY-DAVIDSON" → "Harley-Davidson", not "Harley Davidson"
+    name.strip.split("-").map(&:titleize).join("-")
   end
 
   def self.get(path)

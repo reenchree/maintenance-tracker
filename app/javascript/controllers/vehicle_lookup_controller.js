@@ -20,6 +20,8 @@ export default class extends Controller {
 
     if (!vehicleType) return
 
+    this.setLoading(this.makeTarget, true)
+
     try {
       const url = `${this.makesUrlValue}?vehicle_type=${encodeURIComponent(vehicleType)}`
       const response = await fetch(url)
@@ -27,6 +29,8 @@ export default class extends Controller {
       this.populateSelect(this.makeTarget, makes)
     } catch {
       // Silent degradation — select keeps current value if any
+    } finally {
+      this.setLoading(this.makeTarget, false)
     }
   }
 
@@ -37,6 +41,8 @@ export default class extends Controller {
 
     if (!make || !year) return
 
+    this.setLoading(this.modelTarget, true)
+
     try {
       const url = `${this.modelsUrlValue}?make=${encodeURIComponent(make)}&year=${encodeURIComponent(year)}`
       const response = await fetch(url)
@@ -44,6 +50,26 @@ export default class extends Controller {
       this.populateSelect(this.modelTarget, models)
     } catch {
       // Silent degradation — select keeps current value if any
+    } finally {
+      this.setLoading(this.modelTarget, false)
+    }
+  }
+
+  setLoading(select, loading) {
+    if (loading) {
+      select.disabled = true
+      const prompt = select.querySelector('option[value=""]')
+      if (prompt) {
+        prompt.dataset.originalText = prompt.textContent
+        prompt.textContent = "Loading…"
+      }
+    } else {
+      select.disabled = false
+      const prompt = select.querySelector('option[value=""]')
+      if (prompt?.dataset.originalText) {
+        prompt.textContent = prompt.dataset.originalText
+        delete prompt.dataset.originalText
+      }
     }
   }
 

@@ -23,7 +23,7 @@ class VinDecoderTest < ActiveSupport::TestCase
     result = VinDecoder.decode(SAMPLE_VIN)
 
     assert_nil result.error
-    assert_equal "Harley Davidson", result.make
+    assert_equal "Harley-Davidson", result.make
     assert_equal "motorcycle", result.vehicle_type
   end
 
