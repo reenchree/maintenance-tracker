@@ -64,6 +64,48 @@ class VehiclesControllerTest < ActionDispatch::IntegrationTest
     assert_nil json["error"]
   end
 
+  test "makes returns JSON array of make names" do
+    body = { "Results" => [ { "MakeName" => "HONDA" }, { "MakeName" => "TOYOTA" } ] }.to_json
+    stub_request(:get, "https://vpic.nhtsa.dot.gov/api/vehicles/GetMakesForVehicleType/car?format=json")
+      .to_return(status: 200, body: body, headers: { "Content-Type" => "application/json" })
+
+    get makes_vehicles_url, params: { vehicle_type: "car" }
+
+    assert_response :success
+    json = JSON.parse(response.body)
+    assert_kind_of Array, json
+    assert_includes json, "Honda"
+    assert_includes json, "Toyota"
+  end
+
+  test "makes returns empty array when vehicle_type is missing" do
+    get makes_vehicles_url
+
+    assert_response :success
+    assert_equal [], JSON.parse(response.body)
+  end
+
+  test "models returns JSON array of model names" do
+    body = { "Results" => [ { "Model_Name" => "Civic" }, { "Model_Name" => "Accord" } ] }.to_json
+    stub_request(:get, "https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMakeYear/make/Honda/modelyear/2022?format=json")
+      .to_return(status: 200, body: body, headers: { "Content-Type" => "application/json" })
+
+    get models_vehicles_url, params: { make: "Honda", year: "2022" }
+
+    assert_response :success
+    json = JSON.parse(response.body)
+    assert_kind_of Array, json
+    assert_includes json, "Civic"
+    assert_includes json, "Accord"
+  end
+
+  test "models returns empty array when params are missing" do
+    get models_vehicles_url
+
+    assert_response :success
+    assert_equal [], JSON.parse(response.body)
+  end
+
   test "decode_vin returns error for invalid VIN" do
     get decode_vin_vehicles_url, params: { vin: "SHORT" }
 

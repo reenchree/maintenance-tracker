@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   resources :vehicles do
     collection do
       get :decode_vin
+      get :makes
+      get :models
     end
     resources :service_records, except: :index
   end

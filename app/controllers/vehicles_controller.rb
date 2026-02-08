@@ -47,6 +47,20 @@ class VehiclesController < ApplicationController
     end
   end
 
+  # GET /vehicles/makes
+  def makes
+    render json: NhtsaClient.makes_for_vehicle_type(params[:vehicle_type])
+  rescue StandardError
+    render json: []
+  end
+
+  # GET /vehicles/models
+  def models
+    render json: NhtsaClient.models_for_make_year(params[:make], params[:year])
+  rescue StandardError
+    render json: []
+  end
+
   # GET /vehicles/decode_vin
   def decode_vin
     result = VinDecoder.decode(params[:vin])

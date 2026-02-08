@@ -33,11 +33,21 @@ export default class extends Controller {
   }
 
   fillFields(data) {
-    if (data.make != null) this.makeTarget.value = data.make
-    if (data.model != null) this.modelTarget.value = data.model
-    if (data.year != null) this.yearTarget.value = data.year
-    if (data.trim != null) this.trimTarget.value = data.trim
-    if (data.vehicle_type != null) this.vehicleTypeTarget.value = data.vehicle_type
+    // Order matters: vehicleType first (triggers makes fetch), then year,
+    // then make (triggers models fetch with year already set)
+    const fields = [
+      [data.vehicle_type, this.vehicleTypeTarget],
+      [data.year, this.yearTarget],
+      [data.make, this.makeTarget],
+      [data.model, this.modelTarget],
+      [data.trim, this.trimTarget],
+    ]
+    for (const [value, target] of fields) {
+      if (value != null) {
+        target.value = value
+        target.dispatchEvent(new Event("change", { bubbles: true }))
+      }
+    }
   }
 
   showError(message) {
